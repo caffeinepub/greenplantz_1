@@ -1,0 +1,499 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 17,
+  "summary": "A marketplace website for GreenPlantz connecting garden nursery vendors with customers. Vendors can register, manage products with pricing in rupees, upload photos with automatic watermarking, and fulfill orders. Admin team can manage orders, assign vendors based on location/pincode and product availability, handle payments and shipping details, control vendor access (enable/disable/delete), manage individual product visibility, and configure vendor commission rates.",
+  "architectural_notes": [
+    "Two-sided marketplace: vendor portal and admin portal with separate authentication",
+    "Image processing pipeline for watermark detection and application",
+    "Location-based vendor matching using pincode/address data",
+    "Currency handling in Indian Rupees (INR)",
+    "Admin has full control over vendor access and product visibility",
+    "Commission structure configurable per vendor (percentage or fixed amount)",
+    "Order assignment algorithm considers both product availability and location proximity",
+    "Admin email configuration: greenplantz2020@gmail.com",
+    "Admin team member management with position and individual authentication",
+    "SKU generation logic: unique per vendor-product combination, reused for identical products from same vendor"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-vendor-registration-system-with-fields-for-business-name-contact-information-and-address-including-pincode",
+      "title": "Create vendor registration system with fields for business name, contact information, and address including pincode",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-vendor-login-system-with-authentication",
+      "title": "Implement vendor login system with authentication",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-product-upload-interface-for-vendors-to-add-products-with-name-description-price-in-rupees-and-quantity",
+      "title": "Create product upload interface for vendors to add products with name, description, price in rupees (₹), and quantity",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enable-vendors-to-edit-product-quantity-after-upload",
+      "title": "Enable vendors to edit product quantity after upload",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-photo-upload-system-requiring-minimum-2-photos-per-product",
+      "title": "Implement photo upload system requiring minimum 2 photos per product",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-vendor-dashboard-displaying-assigned-orders-with-order-details",
+      "title": "Create vendor dashboard displaying assigned orders with order details",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-separate-registration-and-login-system-for-greenplantz-admin-team-members",
+      "title": "Create separate registration and login system for GreenPlantz admin team members",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-admin-interface-for-greenplantz-team-to-create-and-upload-order-details",
+      "title": "Build admin interface for GreenPlantz team to create and upload order details",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-payment-management-interface-for-admin-to-record-and-track-payments-to-vendors",
+      "title": "Create payment management interface for admin to record and track payments to vendors",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-shipping-details-entry-form-in-admin-interface-including-address-and-tracking-information",
+      "title": "Add shipping details entry form in admin interface including address and tracking information",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-vendor-assignment-system-allowing-admin-to-assign-specific-vendors-to-fulfill-orders",
+      "title": "Implement vendor assignment system allowing admin to assign specific vendors to fulfill orders",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-location-based-vendor-assignment-feature-that-suggests-vendors-based-on-pincode-or-address-proximity-to-the-order-delivery-location",
+      "title": "Create location-based vendor assignment feature that suggests vendors based on pincode or address proximity to the order delivery location",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-a-professional-marketplace-interface-with-a-nature-inspired-color-palette-greens-and-earth-tones-clean-typography-optimized-for-product-browsing-and-card-based-layouts-for-products-and-orders-that-emphasize-visual-hierarchy-and-usability",
+      "title": "Design a professional marketplace interface with a nature-inspired color palette (greens and earth tones), clean typography optimized for product browsing, and card-based layouts for products and orders that emphasize visual hierarchy and usability",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-greenplantz-logo-with-the-uploaded-custom-logo-image-123-jpg-throughout-the-application-update-the-logo-in-the-layout-component-header-and-any-other-locations-where-the-logo-appears",
+      "title": "Replace the current GreenPlantz logo with the uploaded custom logo image (123.jpg) throughout the application. Update the logo in the Layout component header and any other locations where the logo appears.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-enable-disable-toggle-for-vendor-accounts-in-the-admin-interface-that-controls-vendor-s-ability-to-log-in-and-access-their-dashboard",
+      "title": "Add enable/disable toggle for vendor accounts in the admin interface that controls vendor's ability to log in and access their dashboard",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-delete-vendor-functionality-in-the-admin-interface-that-permanently-removes-the-vendor-account-and-all-associated-data",
+      "title": "Add delete vendor functionality in the admin interface that permanently removes the vendor account and all associated data",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-enable-disable-toggle-for-individual-products-in-the-admin-interface-that-controls-product-visibility-and-availability-without-deleting-the-product",
+      "title": "Add enable/disable toggle for individual products in the admin interface that controls product visibility and availability without deleting the product",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-commission-management-interface-in-the-admin-dashboard-allowing-admin-to-set-either-a-percentage-commission-rate-or-a-fixed-amount-commission-for-each-vendor",
+      "title": "Add commission management interface in the admin dashboard allowing admin to set either a percentage commission rate or a fixed amount commission for each vendor",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-vendor-management-section-in-the-admin-dashboard-displaying-all-vendors-with-their-status-commission-settings-and-quick-access-controls-for-enable-disable-delete-actions",
+      "title": "Create vendor management section in the admin dashboard displaying all vendors with their status, commission settings, and quick access controls for enable/disable/delete actions",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-vendor-assignment-system-to-filter-vendors-based-on-product-availability-in-addition-to-the-existing-address-proximity-logic-ensuring-only-vendors-with-available-enabled-products-matching-the-order-requirements-are-suggested",
+      "title": "Enhance the vendor assignment system to filter vendors based on product availability in addition to the existing address proximity logic, ensuring only vendors with available (enabled) products matching the order requirements are suggested",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-blank-screen-issue-on-vendorregistration-tsx-that-occurs-during-the-internet-identity-authentication-flow",
+      "title": "Debug and fix the blank screen issue on VendorRegistration.tsx that occurs during the Internet Identity authentication flow",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-blank-screen-issue-on-adminregistration-tsx-that-occurs-during-the-internet-identity-authentication-flow",
+      "title": "Debug and fix the blank screen issue on AdminRegistration.tsx that occurs during the Internet Identity authentication flow",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-error-boundary-and-loading-state-handling-to-registration-components-to-prevent-blank-screens-during-authentication-state-transitions",
+      "title": "Add error boundary and loading state handling to registration components to prevent blank screens during authentication state transitions",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-admin-authentication-flow-in-adminregistration-tsx-to-automatically-grant-admin-access-when-the-authenticated-user-s-email-matches-greenplantz2020-gmail-com-bypassing-the-standard-admin-profile-creation-if-this-email-is-detected",
+      "title": "Update the admin authentication flow in AdminRegistration.tsx to automatically grant admin access when the authenticated user's email matches greenplantz2020@gmail.com, bypassing the standard admin profile creation if this email is detected.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-team-member-management-component-in-frontend-displaying-a-table-of-all-team-members-with-columns-for-name-email-position-status-and-actions-edit-enable-disable-delete-include-an-add-team-member-button-that-opens-a-form-dialog",
+      "title": "Create Team Member Management component in frontend displaying a table of all team members with columns for name, email, position, status, and actions (edit, enable/disable, delete). Include an 'Add Team Member' button that opens a form dialog.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-add-edit-team-member-form-dialog-in-frontend-with-fields-for-name-email-and-position-form-should-validate-email-format-and-required-fields-then-call-the-backend-createteammember-or-updateteammember-function-on-submit",
+      "title": "Create Add/Edit Team Member form dialog in frontend with fields for name, email, and position. Form should validate email format and required fields, then call the backend createTeamMember or updateTeamMember function on submit.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-team-members-tab-to-admindashboard-tsx-that-renders-the-team-member-management-component-positioned-after-the-products-tab",
+      "title": "Add Team Members tab to AdminDashboard.tsx that renders the Team Member Management component, positioned after the Products tab.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-productuploadform-tsx-to-display-the-auto-assigned-sku-after-successful-product-creation-show-the-sku-in-a-success-message-or-alert",
+      "title": "Update ProductUploadForm.tsx to display the auto-assigned SKU after successful product creation. Show the SKU in a success message or alert.",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-productlist-tsx-and-productmanagementadmin-tsx-to-display-the-sku-field-for-each-product-in-the-product-cards-and-admin-product-table",
+      "title": "Update ProductList.tsx and ProductManagementAdmin.tsx to display the SKU field for each product in the product cards and admin product table.",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-react-query-hooks-in-frontend-src-hooks-usequeries-ts-for-team-member-management-operations-useteammembers-fetch-list-usecreateteammember-mutation-useupdateteammember-mutation-usetoggleteammemberstatus-mutation-and-usedeleteteammember-mutation",
+      "title": "Create React Query hooks in frontend/src/hooks/useQueries.ts for team member management operations: useTeamMembers (fetch list), useCreateTeamMember (mutation), useUpdateTeamMember (mutation), useToggleTeamMemberStatus (mutation), and useDeleteTeamMember (mutation).",
+      "reqIds": [
+        "REQ-38"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-resolve-the-production-deployment-failure-that-occurred-in-version-6-review-deployment-logs-verify-canister-configurations-and-ensure-all-backend-migrations-complete-successfully",
+      "title": "Investigate and resolve the production deployment failure that occurred in Version 6. Review deployment logs, verify canister configurations, and ensure all backend migrations complete successfully.",
+      "reqIds": [
+        "REQ-39"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-all-team-member-management-features-create-list-update-toggle-status-delete-function-correctly-in-the-deployed-production-environment",
+      "title": "Verify that all team member management features (create, list, update, toggle status, delete) function correctly in the deployed production environment.",
+      "reqIds": [
+        "REQ-40"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-sku-auto-assignment-works-correctly-for-all-new-products-created-through-the-vendor-product-upload-form-in-the-production-environment",
+      "title": "Verify that SKU auto-assignment works correctly for all new products created through the vendor product upload form in the production environment.",
+      "reqIds": [
+        "REQ-41"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-comprehensive-vendor-overview-section-in-the-admin-dashboard-displaying-all-vendors-in-a-table-or-card-layout-with-columns-for-vendor-name-business-address-total-products-count-orders-assigned-count-and-quick-enable-disable-toggle-button-for-each-vendor",
+      "title": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+      "reqIds": [
+        "REQ-42"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-drill-down-view-in-the-admin-dashboard-that-displays-all-products-for-a-selected-vendor-showing-product-name-description-price-quantity-sku-status-enabled-disabled-and-thumbnail-images-of-uploaded-photos",
+      "title": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+      "reqIds": [
+        "REQ-43"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-product-editing-functionality-in-the-admin-dashboard-that-allows-admin-to-edit-any-product-field-name-description-price-quantity-photos-and-automatically-syncs-those-changes-so-they-are-visible-to-the-vendor-who-created-the-product",
+      "title": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
+      "reqIds": [
+        "REQ-44"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-react-query-mutation-hook-useupdateproductbyadmin-in-usequeries-ts-that-calls-the-backend-updateproductbyadmin-function-and-invalidates-product-related-queries-to-refresh-the-ui",
+      "title": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
+      "reqIds": [
+        "REQ-46"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-producteditdialog-component-in-frontend-that-displays-a-form-with-all-product-fields-pre-filled-allows-admin-to-modify-values-and-photos-and-submits-changes-using-the-useupdateproductbyadmin-mutation-hook",
+      "title": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
+      "reqIds": [
+        "REQ-47"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Vendor registration and login system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Product management: upload products with details in rupees, edit quantity",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Photo upload system: minimum 2 photos per product, automatic watermark 'greenplantz.com' in font size 8 at 3 areas, detect existing watermarks and reject with message",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Vendor dashboard showing assigned orders",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Admin/GreenPlantz team registration and login system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Admin interface: upload order details, manage payments to vendors, enter shipping details",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Vendor assignment system: assign vendors to orders based on pincode/address proximity",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-13",
+      "summary": "Add watermark 'greenplantz.com' in font size 8 at 3 locations on each uploaded product photo",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-14",
+      "summary": "Detect existing watermarks on uploaded photos and reject them with message 'upload new photo without watermark'",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-15",
+      "summary": "Admin can enable, disable, or delete vendor accounts and their access to the platform",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-16",
+      "summary": "Admin can disable/enable individual products from vendor catalogs",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-17",
+      "summary": "Admin can set commission percentage or fixed amount per vendor in admin interface",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-18",
+      "summary": "Admin order assignment considers product availability in addition to location proximity",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-21",
+      "summary": "Verify and fix the InternetIdentityProvider initialization in main.tsx to ensure it properly wraps the application and provides authentication context",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-22",
+      "summary": "Set greenplantz2020@gmail.com as admin email id",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-23",
+      "summary": "Configure the system to recognize greenplantz2020@gmail.com as an admin email address. When a user with this email authenticates, they should automatically receive admin privileges and access to the admin dashboard.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-24",
+      "summary": "Admin can add team members to admin dashboard with position field and grant individual login access",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-25",
+      "summary": "Auto-assign SKU to products when added by vendor or admin; ensure same product from same vendor uses same SKU (no duplicate SKUs for identical products)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-26",
+      "summary": "Add data model in backend/main.mo to store admin team members with fields for Principal (identity), name, position, email, and active status. Include functions to create, retrieve, list, update, and delete team members.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-27",
+      "summary": "Update admin authentication logic in backend/main.mo to grant admin access to any Principal whose email matches greenplantz2020@gmail.com OR exists as an active team member in the team member list.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-31",
+      "summary": "Add SKU field to the Product data model in backend/main.mo. The SKU should be a Text field that uniquely identifies products.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-32",
+      "summary": "Implement SKU generation logic in backend/main.mo that creates unique SKUs based on vendorId and normalized product name. When a product is added, check if the same vendor has already created a product with the same normalized name; if yes, reuse that SKU; if no, generate a new SKU. Normalization should trim whitespace and convert to lowercase for comparison.",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-33",
+      "summary": "Create comprehensive admin dashboard to view all products from all vendors with vendor info (products, address, orders assigned) and enable/disable controls",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-34",
+      "summary": "Add vendor products management view in admin dashboard showing all products with details, uploaded photos, and edit functionality that syncs changes back to vendor's product catalog",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-38",
+      "summary": "Create backend function updateProductByAdmin in main.mo that accepts productId and updated product fields, validates admin authorization, updates the product in storage, and returns success confirmation",
+      "reqIds": [
+        "REQ-45"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "GreenPlantz",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

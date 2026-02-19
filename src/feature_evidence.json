@@ -1,0 +1,108 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-create-a-comprehensive-vendor-overview-section-in-the-admin-dashboard-displaying-all-vendors-in-a-table-or-card-layout-with-columns-for-vendor-name-business-address-total-products-count-orders-assigned-count-and-quick-enable-disable-toggle-button-for-each-vendor",
+      "featureTitle": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+      "files": [
+        "frontend/src/components/VendorManagement.tsx",
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-42"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-drill-down-view-in-the-admin-dashboard-that-displays-all-products-for-a-selected-vendor-showing-product-name-description-price-quantity-sku-status-enabled-disabled-and-thumbnail-images-of-uploaded-photos",
+      "featureTitle": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+      "files": [
+        "frontend/src/components/VendorManagement.tsx",
+        "frontend/src/components/VendorProductsView.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-43"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-product-editing-functionality-in-the-admin-dashboard-that-allows-admin-to-edit-any-product-field-name-description-price-quantity-photos-and-automatically-syncs-those-changes-so-they-are-visible-to-the-vendor-who-created-the-product",
+      "featureTitle": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
+      "files": [
+        "frontend/src/components/ProductEditDialog.tsx",
+        "frontend/src/components/VendorProductsView.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-44"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-react-query-mutation-hook-useupdateproductbyadmin-in-usequeries-ts-that-calls-the-backend-updateproductbyadmin-function-and-invalidates-product-related-queries-to-refresh-the-ui",
+      "featureTitle": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-46"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-producteditdialog-component-in-frontend-that-displays-a-form-with-all-product-fields-pre-filled-allows-admin-to-modify-values-and-photos-and-submits-changes-using-the-useupdateproductbyadmin-mutation-hook",
+      "featureTitle": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
+      "files": [
+        "frontend/src/components/ProductEditDialog.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-47"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

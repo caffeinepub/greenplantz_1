@@ -1,0 +1,102 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-19T19:16:05.495Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 6,
+    "implemented": 5,
+    "items": [
+      {
+        "id": "REQ-42",
+        "summary": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/VendorManagement.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/VendorManagement.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-43",
+        "summary": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/VendorProductsView.tsx",
+          "frontend/src/components/VendorManagement.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/VendorProductsView.tsx",
+          "frontend/src/components/VendorManagement.tsx"
+        ]
+      },
+      {
+        "id": "REQ-44",
+        "summary": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ProductEditDialog.tsx",
+          "frontend/src/components/VendorProductsView.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ProductEditDialog.tsx",
+          "frontend/src/components/VendorProductsView.tsx"
+        ]
+      },
+      {
+        "id": "REQ-45",
+        "summary": "Create backend function updateProductByAdmin in main.mo that accepts productId and updated product fields, validates admin authorization, updates the product in storage, and returns success confirmation",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-46",
+        "summary": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-47",
+        "summary": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/components/ProductEditDialog.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/components/ProductEditDialog.tsx"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/ProductEditDialog.tsx",
+    "frontend/src/components/VendorManagement.tsx",
+    "frontend/src/components/VendorProductsView.tsx",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "frontend/src/hooks/useQueries.ts",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
