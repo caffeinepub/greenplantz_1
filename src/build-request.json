@@ -1,142 +1,93 @@
 {
   "kind": "build_request",
-  "title": "Create comprehensive admin vendor and product management dashboard",
-  "projectName": "GreenPlantz",
-  "priority": "normal",
+  "title": "Fix admin registration authorization error and access denied issue",
+  "priority": "high",
   "requirements": [
     {
-      "id": "REQ-42",
-      "text": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ],
-        "quotes": [
-          "admin dash board where admin or team can view all the products entered by the all the vendors , vendors>products, address, orders assigned, enable and disable button"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Admin dashboard displays all registered vendors",
-        "Each vendor row shows: business name, full address, total products count, assigned orders count",
-        "Enable/disable toggle button is present and functional for each vendor",
-        "Clicking enable/disable updates vendor status in real-time"
-      ]
-    },
-    {
-      "id": "REQ-43",
-      "text": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-latest"
-        ],
-        "quotes": [
-          "vendors>products> view all products ,product details , photo uploaded"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Clicking on a vendor in the vendor overview opens a detailed products view",
-        "Products view displays all products created by that vendor",
-        "Each product shows: name, description, price in rupees, quantity, SKU, enabled/disabled status",
-        "Product photos are displayed as thumbnails or in a gallery format",
-        "View includes navigation back to vendor overview"
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "text": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
+      "id": "REQ-98",
+      "text": "Debug and fix the 'Access Denied' error shown in the uploaded screenshot (image-4.png) that displays 'You do not have permission to access the admin dashboard' with 'Authorization Required' and 'Registration failed' messages when attempting to access the admin dashboard",
       "target": "both",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "edit products (edited one should seen by the vendors)"
+          "clear the error"
         ]
       },
       "acceptanceCriteria": [
-        "Admin can click an edit button on any product in the vendor products view",
-        "Edit form allows modification of product name, description, price, quantity",
-        "Admin can add or remove product photos during editing",
-        "After saving, changes are immediately reflected in the vendor's product list",
-        "Vendor sees the updated product information in their dashboard without manual refresh"
+        "The 'Access Denied' error no longer appears when authorized admin users attempt to access the admin dashboard",
+        "Admin authentication completes successfully for greenplantz2020@gmail.com and active team members",
+        "The error message 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' is resolved"
       ]
     },
     {
-      "id": "REQ-45",
-      "text": "Create backend function updateProductByAdmin in main.mo that accepts productId and updated product fields, validates admin authorization, updates the product in storage, and returns success confirmation",
+      "id": "REQ-99",
+      "text": "Fix the backend record validation error 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' shown at the bottom of the uploaded screenshot (image-4.png) in the AdminRegistration.tsx authentication flow",
       "target": "backend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "edit products (edited one should seen by the vendors)"
+          "Registration Failed",
+          "Invalid record"
         ]
       },
       "acceptanceCriteria": [
-        "Function accepts productId and all editable product fields as parameters",
-        "Function verifies caller is an admin or active team member",
-        "Function updates the product record in the Map storage",
-        "Function returns success/error response",
-        "Updated product is immediately available via getProduct and listVendorProducts queries"
+        "Backend properly validates and accepts user profile records during admin registration",
+        "The 'role' field in user profile records is correctly handled in backend/main.mo",
+        "No record validation errors appear during admin authentication flow"
       ]
     },
     {
-      "id": "REQ-46",
-      "text": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
+      "id": "REQ-100",
+      "text": "Verify and fix the admin authorization check logic in ProtectedAdminRoute.tsx that incorrectly denies access to authorized admin users, ensuring it properly validates admin status from the backend isCallerAdmin function before rendering the AdminDashboard",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "edit products (edited one should seen by the vendors)"
+          "Access Denied",
+          "You do not have permission to access the admin dashboard"
         ]
       },
       "acceptanceCriteria": [
-        "Hook accepts productId and updated product data as parameters",
-        "Hook calls the backend updateProductByAdmin function via actor",
-        "On success, invalidates 'products', 'vendorProducts', and 'allProducts' queries",
-        "Returns mutation status (loading, error, success) for UI feedback"
+        "ProtectedAdminRoute.tsx correctly identifies admin users based on backend authorization response",
+        "Authorized admins can successfully access the admin dashboard without encountering 'Access Denied' errors",
+        "Unauthorized users are properly blocked from accessing the admin dashboard with appropriate error messages"
       ]
     },
     {
-      "id": "REQ-47",
-      "text": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
+      "id": "REQ-101",
+      "text": "Add comprehensive error logging in AdminRegistration.tsx to capture the exact backend response and error details when the 'Registration failed' and 'Authorization Required' errors occur, helping identify the root cause of the authorization failure",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-latest"
         ],
         "quotes": [
-          "edit products (edited one should seen by the vendors)"
+          "Authorization Required",
+          "Registration failed"
         ]
       },
       "acceptanceCriteria": [
-        "Dialog opens with current product data pre-filled in form fields",
-        "Form includes fields for name, description, price, quantity",
-        "Photo management allows viewing current photos, removing photos, and uploading new ones",
-        "Submit button triggers useUpdateProductByAdmin mutation",
-        "Success shows confirmation toast and closes dialog",
-        "Error displays appropriate error message"
+        "Console logs display detailed error information when admin registration or authorization fails",
+        "Backend responses from getUser, createUser, and isCallerAdmin calls are logged with full error details",
+        "Error messages clearly indicate which step in the authentication flow is failing"
       ]
     }
   ],
   "constraints": [
-    "Use the single-actor architecture in backend/main.mo for all new backend functions",
-    "Maintain existing ProductManagementAdmin.tsx component and extend it rather than replacing it",
-    "Preserve the existing Map-based storage pattern for products and vendors",
-    "Ensure admin authorization checks use the existing isAdmin or isTeamMember logic",
-    "Keep the existing photo upload and watermarking system intact"
+    "Do not change the backend single-actor architecture",
+    "Do not modify frontend/src/hooks/useInternetIdentity.ts or useActor.ts",
+    "Preserve existing admin authorization logic that checks greenplantz2020@gmail.com and team member status"
   ],
   "nonGoals": [
-    "Creating new vendor or order management features beyond what already exists",
-    "Modifying the vendor dashboard or vendor-facing product editing interface",
-    "Changing the existing product data model structure",
-    "Implementing bulk product editing or multi-select operations",
-    "Adding product import/export functionality"
+    "Adding new authentication methods beyond Internet Identity",
+    "Changing the existing user profile or admin profile data models",
+    "Modifying vendor authentication or registration flows"
   ],
   "imageRequirements": {
     "required": [],

@@ -10,23 +10,43 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
-export type ExternalBlob = Uint8Array;
-export interface UpdateProductRequest {
+export interface Order {
+  'id' : string,
+  'status' : OrderStatus,
+  'paymentStatus' : string,
+  'productId' : string,
+  'totalAmount' : bigint,
+  'vendorId' : [] | [Principal],
+  'quantity' : bigint,
+  'customerId' : Principal,
+}
+export type OrderStatus = { 'shipped' : null } |
+  { 'assigned' : null } |
+  { 'cancelled' : null } |
+  { 'pending' : null } |
+  { 'paid' : null } |
+  { 'delivered' : null };
+export interface Product {
+  'id' : string,
   'sku' : string,
   'name' : string,
   'description' : string,
-  'productId' : string,
-  'enabled' : boolean,
-  'priceRupees' : bigint,
-  'quantity' : bigint,
-  'photos' : Array<ExternalBlob>,
+  'stock' : bigint,
+  'imageUrl' : [] | [string],
+  'vendorId' : Principal,
+  'price' : bigint,
 }
 export interface UserProfile {
-  'userType' : string,
   'name' : string,
+  'role' : UserRole,
+  'businessName' : [] | [string],
   'email' : string,
+  'phone' : [] | [string],
 }
 export type UserRole = { 'admin' : null } |
+  { 'customer' : null } |
+  { 'vendor' : null };
+export type UserRole__1 = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
 export interface _CaffeineStorageCreateCertificateResult {
@@ -57,13 +77,23 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
-  'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
+  'assignCallerUserRole' : ActorMethod<[Principal, UserRole__1], undefined>,
+  'assignVendorToOrder' : ActorMethod<[string, Principal], undefined>,
+  'createOrder' : ActorMethod<[Order], string>,
+  'createProduct' : ActorMethod<[Product], string>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
-  'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getCallerUserRole' : ActorMethod<[], UserRole__1>,
+  'getOrder' : ActorMethod<[string], Order>,
+  'getProduct' : ActorMethod<[string], [] | [Product]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'listOrders' : ActorMethod<[], Array<Order>>,
+  'listProducts' : ActorMethod<[], Array<Product>>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
-  'updateProductByAdmin' : ActorMethod<[UpdateProductRequest], boolean>,
+  'textToUserRole' : ActorMethod<[string], UserRole>,
+  'updatePaymentStatus' : ActorMethod<[string, string], undefined>,
+  'updateProduct' : ActorMethod<[string, Product], undefined>,
+  'userRoleToText' : ActorMethod<[UserRole], string>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

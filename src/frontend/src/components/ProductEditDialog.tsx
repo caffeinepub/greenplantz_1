@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useUpdateProductByAdmin } from '../hooks/useQueries';
+import { useUpdateProductQuantity, useToggleProductStatus } from '../hooks/useQueries';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Loader2, X, Upload, ImageIcon } from 'lucide-react';
+import { Loader2, X, Upload, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import type { Product, VendorId } from '../types';
 import { ExternalBlob } from '../backend';
 
@@ -19,7 +20,8 @@ interface ProductEditDialogProps {
 }
 
 export default function ProductEditDialog({ open, onOpenChange, product, vendorId }: ProductEditDialogProps) {
-  const updateProduct = useUpdateProductByAdmin();
+  const updateQuantity = useUpdateProductQuantity();
+  const toggleStatus = useToggleProductStatus();
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
@@ -73,35 +75,30 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name.trim()) {
-      toast.error('Product name is required');
-      return;
-    }
-
-    if (!formData.priceRupees || Number(formData.priceRupees) <= 0) {
-      toast.error('Valid price is required');
-      return;
-    }
-
     if (!formData.quantity || Number(formData.quantity) < 0) {
       toast.error('Valid quantity is required');
       return;
     }
 
     try {
-      await updateProduct.mutateAsync({
-        productId: product.sku,
-        sku: product.sku,
-        name: formData.name,
-        description: formData.description,
-        priceRupees: BigInt(formData.priceRupees),
-        quantity: BigInt(formData.quantity),
-        photos: photos,
-        enabled: formData.enabled,
-      });
+      // Update quantity if changed
+      if (formData.quantity !== product.quantity.toString()) {
+        await updateQuantity.mutateAsync({
+          productName: product.name,
+          newQuantity: BigInt(formData.quantity),
+        });
+      }
+
+      // Update enabled status if changed
+      if (formData.enabled !== product.enabled) {
+        await toggleStatus.mutateAsync({
+          key: [vendorId, product.sku],
+          enabled: formData.enabled,
+        });
+      }
 
       toast.success('Product updated successfully', {
-        description: 'Changes are now visible to the vendor',
+        description: 'Quantity and status have been updated. Note: Name, description, price, and photos cannot be edited yet.',
       });
       onOpenChange(false);
     } catch (error: any) {
@@ -112,30 +109,47 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
     }
   };
 
+  const hasUnsupportedChanges = 
+    formData.name !== product.name ||
+    formData.description !== product.description ||
+    formData.priceRupees !== product.priceRupees.toString() ||
+    photos.length !== product.photos.length;
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Product</DialogTitle>
           <DialogDescription>
-            Make changes to the product. These changes will be visible to the vendor.
+            Currently, only quantity and status can be updated. Full product editing requires backend support.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Product Name */}
+          {hasUnsupportedChanges && (
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                Changes to name, description, price, and photos are not yet supported by the backend.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Product Name (Read-only for now) */}
           <div className="space-y-2">
-            <Label htmlFor="name">Product Name *</Label>
+            <Label htmlFor="name">Product Name</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Enter product name"
-              required
+              disabled
+              className="bg-muted"
             />
+            <p className="text-xs text-muted-foreground">Name editing not yet supported</p>
           </div>
 
-          {/* Description */}
+          {/* Description (Read-only for now) */}
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
             <Textarea
@@ -144,13 +158,16 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Enter product description"
               rows={4}
+              disabled
+              className="bg-muted"
             />
+            <p className="text-xs text-muted-foreground">Description editing not yet supported</p>
           </div>
 
           {/* Price and Quantity */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Price (₹) *</Label>
+              <Label htmlFor="price">Price (₹)</Label>
               <Input
                 id="price"
                 type="number"
@@ -158,8 +175,10 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
                 value={formData.priceRupees}
                 onChange={(e) => setFormData({ ...formData, priceRupees: e.target.value })}
                 placeholder="0"
-                required
+                disabled
+                className="bg-muted"
               />
+              <p className="text-xs text-muted-foreground">Price editing not yet supported</p>
             </div>
             <div className="space-y-2">
               <Label htmlFor="quantity">Quantity *</Label>
@@ -172,6 +191,7 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
                 placeholder="0"
                 required
               />
+              <p className="text-xs text-muted-foreground">You can update quantity</p>
             </div>
           </div>
 
@@ -201,67 +221,33 @@ export default function ProductEditDialog({ open, onOpenChange, product, vendorI
             />
           </div>
 
-          {/* Photos */}
+          {/* Photos (Read-only for now) */}
           <div className="space-y-4">
             <Label>Product Photos</Label>
+            <p className="text-xs text-muted-foreground">Photo editing not yet supported</p>
             
             {/* Current Photos */}
             {photos.length > 0 && (
               <div className="grid grid-cols-3 gap-4">
                 {photos.map((photo, index) => (
-                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-muted group">
+                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden bg-muted">
                     <img
                       src={(photo as ExternalBlob).getDirectURL()}
                       alt={`Product ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
-                    <button
-                      type="button"
-                      onClick={() => handleRemovePhoto(index)}
-                      className="absolute top-2 right-2 p-1 bg-destructive text-destructive-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
                   </div>
                 ))}
               </div>
             )}
-
-            {/* Upload New Photos */}
-            <div className="border-2 border-dashed rounded-lg p-6 text-center">
-              <input
-                type="file"
-                id="photo-upload"
-                accept="image/*"
-                multiple
-                onChange={handlePhotoUpload}
-                className="hidden"
-                disabled={isUploading}
-              />
-              <label htmlFor="photo-upload" className="cursor-pointer">
-                {isUploading ? (
-                  <div className="space-y-2">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-                    <p className="text-sm text-muted-foreground">Uploading... {uploadProgress}%</p>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <Upload className="h-8 w-8 text-muted-foreground mx-auto" />
-                    <p className="text-sm text-muted-foreground">
-                      Click to upload additional photos
-                    </p>
-                  </div>
-                )}
-              </label>
-            </div>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={updateProduct.isPending || isUploading}>
-              {updateProduct.isPending ? (
+            <Button type="submit" disabled={updateQuantity.isPending || toggleStatus.isPending || isUploading}>
+              {(updateQuantity.isPending || toggleStatus.isPending) ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Saving...

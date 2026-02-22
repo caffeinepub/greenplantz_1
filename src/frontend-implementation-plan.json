@@ -1,109 +1,68 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Create comprehensive admin vendor and product management dashboard",
+  "title": "Fix admin registration authorization error and access denied issue",
   "requirements": [
     {
-      "id": "REQ-42",
-      "summary": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+      "id": "REQ-98",
+      "summary": "Debug and fix the 'Access Denied' error that displays 'You do not have permission to access the admin dashboard' with 'Authorization Required' and 'Registration failed' messages when attempting to access the admin dashboard",
       "acceptanceCriteria": [
-        "Admin dashboard displays all registered vendors",
-        "Each vendor row shows: business name, full address, total products count, assigned orders count",
-        "Enable/disable toggle button is present and functional for each vendor",
-        "Clicking enable/disable updates vendor status in real-time"
+        "The 'Access Denied' error no longer appears when authorized admin users attempt to access the admin dashboard",
+        "Admin authentication completes successfully for greenplantz2020@gmail.com and active team members",
+        "The error message 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' is resolved"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/VendorManagement.tsx",
+          "path": "frontend/src/components/AdminRegistration.tsx",
           "operation": "modify",
-          "description": "Extend the existing vendor table to include new columns for 'Total Products' and 'Orders Assigned'. Add these columns after the business name and address columns. Fetch product counts and order counts from backend queries. Ensure the enable/disable toggle button functionality is maintained. Verify the authorization component's usage instructions before implementing admin-only access."
+          "description": "Fix the user profile data structure being sent to saveCallerUserProfile to match the backend UserProfile type exactly. Ensure the 'role' field uses the correct UserRole enum value (admin, customer, or vendor) instead of the authorization component's UserRole__1 enum (admin, user, guest). Add detailed console logging to capture the exact profile object being sent and any backend error responses during registration and authorization checks."
+        },
+        {
+          "path": "frontend/src/components/ProtectedAdminRoute.tsx",
+          "operation": "modify",
+          "description": "Add comprehensive error handling and logging in the admin authorization check flow. Log the response from isCallerAdmin backend call, the current authentication state, and the user profile retrieval results. Ensure proper error boundaries catch authorization failures and display them clearly to help diagnose why authorized users are being denied access."
+        }
+      ]
+    },
+    {
+      "id": "REQ-100",
+      "summary": "Verify and fix the admin authorization check logic in ProtectedAdminRoute.tsx that incorrectly denies access to authorized admin users, ensuring it properly validates admin status from the backend isCallerAdmin function before rendering the AdminDashboard",
+      "acceptanceCriteria": [
+        "ProtectedAdminRoute.tsx correctly identifies admin users based on backend authorization response",
+        "Authorized admins can successfully access the admin dashboard without encountering 'Access Denied' errors",
+        "Unauthorized users are properly blocked from accessing the admin dashboard with appropriate error messages"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ProtectedAdminRoute.tsx",
+          "operation": "modify",
+          "description": "Review and fix the authorization logic flow to properly handle the isCallerAdmin response. Ensure the component waits for both authentication and admin check to complete before making access decisions. Add proper loading states to prevent premature access denial. Verify that the error state handling correctly distinguishes between authentication failures, authorization failures, and other errors. Add console logs showing the exact sequence of checks and their results."
         },
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add query hooks useGetVendorProductCount and useGetVendorOrderCount that fetch the total products and assigned orders count for each vendor from the backend. These hooks should accept vendorId as a parameter and return the numeric counts. Use React Query's caching strategy to optimize performance when displaying multiple vendors."
+          "description": "Add or enhance the useIsCallerAdmin query hook to include proper error handling, retry logic, and loading state management. Ensure the hook properly communicates backend failures versus authorization denials. Add detailed logging of the backend response to help diagnose authorization check failures."
         }
       ]
     },
     {
-      "id": "REQ-43",
-      "summary": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+      "id": "REQ-101",
+      "summary": "Add comprehensive error logging in AdminRegistration.tsx to capture the exact backend response and error details when the 'Registration failed' and 'Authorization Required' errors occur, helping identify the root cause of the authorization failure",
       "acceptanceCriteria": [
-        "Clicking on a vendor in the vendor overview opens a detailed products view",
-        "Products view displays all products created by that vendor",
-        "Each product shows: name, description, price in rupees, quantity, SKU, enabled/disabled status",
-        "Product photos are displayed as thumbnails or in a gallery format",
-        "View includes navigation back to vendor overview"
+        "Console logs display detailed error information when admin registration or authorization fails",
+        "Backend responses from getUser, createUser, and isCallerAdmin calls are logged with full error details",
+        "Error messages clearly indicate which step in the authentication flow is failing"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/VendorProductsView.tsx",
-          "operation": "create",
-          "description": "Create a new component that displays all products for a selected vendor in a detailed view. Accept vendorId and vendorName as props. Use the existing useListVendorProducts query hook to fetch products. Display products in a grid or table layout with columns for: product name, description, price in rupees, quantity, SKU, enabled/disabled status badge, and thumbnail images. Include a back button to return to the vendor overview. Use blob-storage component's ExternalBlob.getDirectURL() method to display product photo thumbnails. Verify the blob-storage component's usage instructions before implementing photo display."
-        },
-        {
-          "path": "frontend/src/components/VendorManagement.tsx",
+          "path": "frontend/src/components/AdminRegistration.tsx",
           "operation": "modify",
-          "description": "Add click handlers to vendor table rows that open the VendorProductsView component in a dialog or navigate to it. Pass the selected vendor's ID and business name as props. Implement state management to track which vendor is selected for drill-down view. Add visual affordance (cursor pointer, hover effect) to indicate rows are clickable."
-        }
-      ]
-    },
-    {
-      "id": "REQ-44",
-      "summary": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
-      "acceptanceCriteria": [
-        "Admin can click an edit button on any product in the vendor products view",
-        "Edit form allows modification of product name, description, price, quantity",
-        "Admin can add or remove product photos during editing",
-        "After saving, changes are immediately reflected in the vendor's product list",
-        "Vendor sees the updated product information in their dashboard without manual refresh"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/ProductEditDialog.tsx",
-          "operation": "create",
-          "description": "Create a dialog component that displays a form for editing product details. Accept product object as prop and pre-fill all form fields (name, description, price, quantity). Include photo management that displays current photos using ExternalBlob.getDirectURL(), allows removing existing photos, and uploading new ones using the blob-storage component with progress tracking via withUploadProgress(). Use the useUpdateProductByAdmin mutation hook for submission. Show loading state during save and display success toast on completion. Verify the blob-storage component's usage instructions before implementing photo management."
+          "description": "Add comprehensive console logging throughout the registration flow. Log: 1) The authentication state and identity before any backend calls, 2) The exact user profile object structure being sent to saveCallerUserProfile (including all fields and their types), 3) The full error response from saveCallerUserProfile if it fails (including error message, stack trace if available, and any validation errors), 4) The response from getCallerUserProfile after saving, 5) The response from isCallerAdmin including whether it returns true/false or throws an error, 6) Any caught exceptions with full error details. Wrap each backend call in try-catch blocks with detailed logging in both success and error cases. Use console.group() to organize related log statements for easier debugging."
         },
-        {
-          "path": "frontend/src/components/VendorProductsView.tsx",
-          "operation": "modify",
-          "description": "Add an edit button to each product row or card that opens the ProductEditDialog component. Pass the selected product data to the dialog. Handle dialog open/close state. After successful edit, the product list will automatically refresh via React Query cache invalidation."
-        }
-      ]
-    },
-    {
-      "id": "REQ-46",
-      "summary": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
-      "acceptanceCriteria": [
-        "Hook accepts productId and updated product data as parameters",
-        "Hook calls the backend updateProductByAdmin function via actor",
-        "On success, invalidates 'products', 'vendorProducts', and 'allProducts' queries",
-        "Returns mutation status (loading, error, success) for UI feedback"
-      ],
-      "file_operations": [
         {
           "path": "frontend/src/hooks/useQueries.ts",
           "operation": "modify",
-          "description": "Add a new mutation hook useUpdateProductByAdmin that accepts UpdateProductRequest (productId, name, description, priceRupees, quantity, sku, enabled, photos as ExternalBlob array) as parameter. Call actor.updateProductByAdmin with the request data. On success, invalidate query keys: ['products'], ['vendorProducts'], and ['allProducts'] to trigger UI refresh. Return mutation status including isLoading, isError, isSuccess, and error for UI feedback. Use the existing mutation pattern from other hooks in the file."
-        }
-      ]
-    },
-    {
-      "id": "REQ-47",
-      "summary": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
-      "acceptanceCriteria": [
-        "Dialog opens with current product data pre-filled in form fields",
-        "Form includes fields for name, description, price, quantity",
-        "Photo management allows viewing current photos, removing photos, and uploading new ones",
-        "Submit button triggers useUpdateProductByAdmin mutation",
-        "Success shows confirmation toast and closes dialog",
-        "Error displays appropriate error message"
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/ProductEditDialog.tsx",
-          "operation": "create",
-          "description": "Create a dialog component using shadcn/ui Dialog components. Accept product prop with all product fields. Pre-fill form inputs with current product values (name, description, price in rupees, quantity). Implement photo management section that displays current photos as thumbnails using ExternalBlob.getDirectURL(), allows removing individual photos with a delete button, and supports uploading new photos with progress tracking using ExternalBlob.fromBytes().withUploadProgress(). Use useUpdateProductByAdmin mutation hook for form submission. Display loading spinner on submit button during mutation. Show success toast notification on successful save and close dialog. Display error message if mutation fails. Verify the blob-storage component's usage instructions before implementing photo handling."
+          "description": "Enhance the saveCallerUserProfile mutation and useIsCallerAdmin query with additional error logging. Log the raw error object from backend calls, the error message, and any additional error properties. For saveCallerUserProfile, log the profile object being sent before the mutation executes. Add logging that captures whether errors are coming from network failures, backend traps, or validation failures."
         }
       ]
     }

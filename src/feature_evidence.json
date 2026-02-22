@@ -2,10 +2,31 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-comprehensive-vendor-overview-section-in-the-admin-dashboard-displaying-all-vendors-in-a-table-or-card-layout-with-columns-for-vendor-name-business-address-total-products-count-orders-assigned-count-and-quick-enable-disable-toggle-button-for-each-vendor",
-      "featureTitle": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+      "featureId": "feature-debug-and-fix-the-access-denied-error-shown-in-the-uploaded-screenshot-image-4-png-that-displays-you-do-not-have-permission-to-access-the-admin-dashboard-with-authorization-required-and-registration-failed-messages-when-attempting-to-access-the-admin-dashboard",
+      "featureTitle": "Debug and fix the 'Access Denied' error shown in the uploaded screenshot (image-4.png) that displays 'You do not have permission to access the admin dashboard' with 'Authorization Required' and 'Registration failed' messages when attempting to access the admin dashboard",
       "files": [
-        "frontend/src/components/VendorManagement.tsx",
+        "frontend/src/components/AdminRegistration.tsx",
+        "frontend/src/components/ProtectedAdminRoute.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-98"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-verify-and-fix-the-admin-authorization-check-logic-in-protectedadminroute-tsx-that-incorrectly-denies-access-to-authorized-admin-users-ensuring-it-properly-validates-admin-status-from-the-backend-iscalleradmin-function-before-rendering-the-admindashboard",
+      "featureTitle": "Verify and fix the admin authorization check logic in ProtectedAdminRoute.tsx that incorrectly denies access to authorized admin users, ensuring it properly validates admin status from the backend isCallerAdmin function before rendering the AdminDashboard",
+      "files": [
+        "frontend/src/components/ProtectedAdminRoute.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -18,56 +39,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-42"
+        "REQ-100"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-drill-down-view-in-the-admin-dashboard-that-displays-all-products-for-a-selected-vendor-showing-product-name-description-price-quantity-sku-status-enabled-disabled-and-thumbnail-images-of-uploaded-photos",
-      "featureTitle": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+      "featureId": "feature-add-comprehensive-error-logging-in-adminregistration-tsx-to-capture-the-exact-backend-response-and-error-details-when-the-registration-failed-and-authorization-required-errors-occur-helping-identify-the-root-cause-of-the-authorization-failure",
+      "featureTitle": "Add comprehensive error logging in AdminRegistration.tsx to capture the exact backend response and error details when the 'Registration failed' and 'Authorization Required' errors occur, helping identify the root cause of the authorization failure",
       "files": [
-        "frontend/src/components/VendorManagement.tsx",
-        "frontend/src/components/VendorProductsView.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-43"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-implement-product-editing-functionality-in-the-admin-dashboard-that-allows-admin-to-edit-any-product-field-name-description-price-quantity-photos-and-automatically-syncs-those-changes-so-they-are-visible-to-the-vendor-who-created-the-product",
-      "featureTitle": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
-      "files": [
-        "frontend/src/components/ProductEditDialog.tsx",
-        "frontend/src/components/VendorProductsView.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-44"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-react-query-mutation-hook-useupdateproductbyadmin-in-usequeries-ts-that-calls-the-backend-updateproductbyadmin-function-and-invalidates-product-related-queries-to-refresh-the-ui",
-      "featureTitle": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
-      "files": [
+        "frontend/src/components/AdminRegistration.tsx",
         "frontend/src/hooks/useQueries.ts"
       ],
       "components": [
@@ -80,27 +60,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-46"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-create-a-producteditdialog-component-in-frontend-that-displays-a-form-with-all-product-fields-pre-filled-allows-admin-to-modify-values-and-photos-and-submits-changes-using-the-useupdateproductbyadmin-mutation-hook",
-      "featureTitle": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
-      "files": [
-        "frontend/src/components/ProductEditDialog.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-47"
+        "REQ-101"
       ],
       "confidence": "high"
     }

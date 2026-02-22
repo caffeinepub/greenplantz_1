@@ -42,7 +42,10 @@ export default function ProductManagementAdmin() {
 
   const handleToggleStatus = async (vendorId: VendorId, productName: string, currentStatus: boolean) => {
     try {
-      await toggleStatus.mutateAsync({ vendorId, productName, enabled: !currentStatus });
+      await toggleStatus.mutateAsync({ 
+        key: [vendorId, productName], 
+        enabled: !currentStatus 
+      });
       toast.success(`Product ${currentStatus ? 'disabled' : 'enabled'} successfully`);
     } catch (error) {
       console.error('Toggle product status error:', error);

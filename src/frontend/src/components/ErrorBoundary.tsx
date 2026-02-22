@@ -1,6 +1,5 @@
-import React, { Component, ReactNode } from 'react';
-import { AlertCircle } from 'lucide-react';
-import { Button } from './ui/button';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { AlertTriangle } from 'lucide-react';
 
 interface Props {
   children: ReactNode;
@@ -8,91 +7,141 @@ interface Props {
 
 interface State {
   hasError: boolean;
-  error: Error | null;
-  errorInfo: React.ErrorInfo | null;
+  error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
-export default class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error): Partial<State> {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-    console.error('Component stack:', errorInfo.componentStack);
-    
-    // Log to help with production debugging
-    if (typeof window !== 'undefined') {
-      console.error('Environment:', {
-        userAgent: navigator.userAgent,
-        url: window.location.href,
-        timestamp: new Date().toISOString(),
-      });
-    }
-    
-    this.setState({ errorInfo });
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    // Enhanced logging for production debugging
+    console.error('ErrorBoundary caught an error:', {
+      error: error.toString(),
+      message: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      timestamp: new Date().toISOString(),
+    });
+
+    // Categorize error types for better debugging
+    const errorType = this.categorizeError(error);
+    console.error('Error type:', errorType);
+
+    this.setState({
+      error,
+      errorInfo,
+    });
   }
 
-  handleReset = () => {
-    this.setState({ hasError: false, error: null, errorInfo: null });
-    window.location.href = '/';
-  };
+  categorizeError(error: Error): string {
+    const message = error.message.toLowerCase();
+    
+    if (message.includes('unauthorized') || message.includes('permission') || message.includes('auth')) {
+      return 'AUTHENTICATION_ERROR';
+    }
+    
+    if (message.includes('network') || message.includes('fetch') || message.includes('connection')) {
+      return 'NETWORK_ERROR';
+    }
+    
+    if (message.includes('router') || message.includes('navigation') || message.includes('route')) {
+      return 'ROUTER_ERROR';
+    }
+    
+    if (message.includes('actor') || message.includes('canister')) {
+      return 'BACKEND_ERROR';
+    }
+    
+    return 'UNKNOWN_ERROR';
+  }
 
   render() {
     if (this.state.hasError) {
-      const isAuthError = this.state.error?.message?.toLowerCase().includes('auth') ||
-                          this.state.error?.message?.toLowerCase().includes('identity') ||
-                          this.state.error?.message?.toLowerCase().includes('login');
-
-      const isNetworkError = this.state.error?.message?.toLowerCase().includes('network') ||
-                             this.state.error?.message?.toLowerCase().includes('fetch') ||
-                             this.state.error?.message?.toLowerCase().includes('connection');
-
-      const isRouterError = this.state.error?.message?.toLowerCase().includes('router') ||
-                            this.state.error?.message?.toLowerCase().includes('route');
-
-      let errorTitle = 'Something went wrong';
-      let errorMessage = 'An unexpected error occurred. Please try again.';
-
-      if (isAuthError) {
-        errorTitle = 'Authentication Error';
-        errorMessage = 'There was a problem with authentication. Please try logging in again.';
-      } else if (isNetworkError) {
-        errorTitle = 'Network Error';
-        errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.';
-      } else if (isRouterError) {
-        errorTitle = 'Navigation Error';
-        errorMessage = 'There was a problem loading the page. Please try again.';
-      }
+      const isDev = import.meta.env.DEV;
+      const errorType = this.state.error ? this.categorizeError(this.state.error) : 'UNKNOWN_ERROR';
 
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 p-4">
-          <div className="max-w-md w-full bg-card rounded-2xl shadow-lg p-8 border border-border">
-            <div className="flex flex-col items-center text-center">
-              <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-destructive/10 mb-4">
-                <AlertCircle className="h-8 w-8 text-destructive" />
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-destructive/5 to-destructive/10 p-4">
+          <div className="max-w-2xl w-full bg-card rounded-2xl shadow-lg p-8 border border-border">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-destructive" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">{errorTitle}</h2>
-              <p className="text-muted-foreground mb-4">{errorMessage}</p>
-              {process.env.NODE_ENV === 'development' && this.state.error && (
-                <details className="mb-4 w-full text-left">
-                  <summary className="cursor-pointer text-sm text-muted-foreground hover:text-foreground">
-                    Error Details
+              <div>
+                <h1 className="text-2xl font-bold">Something went wrong</h1>
+                <p className="text-muted-foreground">
+                  {errorType === 'AUTHENTICATION_ERROR' && 'There was a problem with authentication'}
+                  {errorType === 'NETWORK_ERROR' && 'Unable to connect to the server'}
+                  {errorType === 'ROUTER_ERROR' && 'Navigation error occurred'}
+                  {errorType === 'BACKEND_ERROR' && 'Backend service error'}
+                  {errorType === 'UNKNOWN_ERROR' && 'An unexpected error occurred'}
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                {errorType === 'AUTHENTICATION_ERROR' && 'Please try logging out and logging back in. If the problem persists, clear your browser cache.'}
+                {errorType === 'NETWORK_ERROR' && 'Please check your internet connection and try again.'}
+                {errorType === 'ROUTER_ERROR' && 'Please try refreshing the page or navigating back to the home page.'}
+                {errorType === 'BACKEND_ERROR' && 'The backend service is experiencing issues. Please try again later.'}
+                {errorType === 'UNKNOWN_ERROR' && 'We apologize for the inconvenience. Please try refreshing the page.'}
+              </p>
+
+              {isDev && this.state.error && (
+                <details className="mt-4 p-4 bg-muted rounded-lg">
+                  <summary className="cursor-pointer font-medium text-sm mb-2">
+                    Error Details (Development Mode)
                   </summary>
-                  <pre className="mt-2 text-xs bg-muted p-2 rounded overflow-auto max-h-40">
-                    {this.state.error.toString()}
-                    {this.state.errorInfo?.componentStack}
-                  </pre>
+                  <div className="space-y-2 text-xs font-mono">
+                    <div>
+                      <strong>Error Type:</strong> {errorType}
+                    </div>
+                    <div>
+                      <strong>Message:</strong> {this.state.error.message}
+                    </div>
+                    {this.state.error.stack && (
+                      <div>
+                        <strong>Stack:</strong>
+                        <pre className="mt-1 overflow-auto max-h-40 text-xs">
+                          {this.state.error.stack}
+                        </pre>
+                      </div>
+                    )}
+                    {this.state.errorInfo?.componentStack && (
+                      <div>
+                        <strong>Component Stack:</strong>
+                        <pre className="mt-1 overflow-auto max-h-40 text-xs">
+                          {this.state.errorInfo.componentStack}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
                 </details>
               )}
-              <Button onClick={this.handleReset} className="w-full">
-                Return to Home
-              </Button>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => window.location.reload()}
+                  className="px-6 py-2 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-colors"
+                >
+                  Refresh Page
+                </button>
+                <button
+                  onClick={() => window.location.href = '/'}
+                  className="px-6 py-2 bg-secondary text-secondary-foreground rounded-full font-medium hover:bg-secondary/90 transition-colors"
+                >
+                  Go to Home
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -102,3 +151,5 @@ export default class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export default ErrorBoundary;

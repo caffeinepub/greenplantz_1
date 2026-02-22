@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTeamMembers, useToggleTeamMemberStatus, useDeleteTeamMember } from '../hooks/useQueries';
+import { useGetAllTeamMembers, useUpdateTeamMember, useDeleteTeamMember } from '../hooks/useQueries';
 import TeamMemberDialog from './TeamMemberDialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,8 @@ import type { TeamMember } from '../types';
 import { toast } from 'sonner';
 
 export default function TeamMemberManagement() {
-  const { data: teamMembers = [], isLoading, error } = useTeamMembers();
-  const toggleStatus = useToggleTeamMemberStatus();
+  const { data: teamMembers = [], isLoading, error } = useGetAllTeamMembers();
+  const updateMember = useUpdateTeamMember();
   const deleteMember = useDeleteTeamMember();
   const [searchTerm, setSearchTerm] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -43,7 +43,7 @@ export default function TeamMemberManagement() {
 
   const handleToggleStatus = async (member: TeamMember) => {
     try {
-      await toggleStatus.mutateAsync({
+      await updateMember.mutateAsync({
         memberId: member.id,
         name: member.name,
         position: member.position,
@@ -177,7 +177,7 @@ export default function TeamMemberManagement() {
                       <Switch
                         checked={member.active}
                         onCheckedChange={() => handleToggleStatus(member)}
-                        disabled={toggleStatus.isPending}
+                        disabled={updateMember.isPending}
                       />
                       <Badge variant={member.active ? 'default' : 'secondary'}>
                         {member.active ? 'Active' : 'Inactive'}
@@ -185,24 +185,22 @@ export default function TeamMemberManagement() {
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex justify-end gap-2">
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleEditMember(member)}
-                        className="gap-1"
+                        disabled={updateMember.isPending || deleteMember.isPending}
                       >
                         <Edit2 className="h-4 w-4" />
-                        Edit
                       </Button>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => handleDeleteClick(member)}
-                        className="gap-1 text-destructive hover:text-destructive"
+                        disabled={updateMember.isPending || deleteMember.isPending}
                       >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
                   </TableCell>
@@ -213,7 +211,7 @@ export default function TeamMemberManagement() {
         </div>
       )}
 
-      {/* Team Member Dialog */}
+      {/* Add/Edit Dialog */}
       <TeamMemberDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
@@ -226,7 +224,7 @@ export default function TeamMemberManagement() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Team Member</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete {memberToDelete?.name}? This action cannot be undone and will revoke their admin access.
+              Are you sure you want to delete {memberToDelete?.name}? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -237,7 +235,7 @@ export default function TeamMemberManagement() {
             >
               {deleteMember.isPending ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   Deleting...
                 </>
               ) : (

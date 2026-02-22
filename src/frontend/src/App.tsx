@@ -1,11 +1,12 @@
 import { StrictMode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RouterProvider, createRouter, createRootRoute, createRoute, ErrorComponent } from '@tanstack/react-router';
+import { RouterProvider, createRouter, createRootRoute, createRoute, ErrorComponent, Outlet } from '@tanstack/react-router';
 import { Toaster } from '@/components/ui/sonner';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import VendorDashboard from './pages/VendorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminRegistration from './components/AdminRegistration';
 import ProtectedVendorRoute from './components/ProtectedVendorRoute';
 import ProtectedAdminRoute from './components/ProtectedAdminRoute';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -27,6 +28,7 @@ const queryClient = new QueryClient({
 const rootRoute = createRootRoute({
   component: () => (
     <Layout>
+      <Outlet />
       <Toaster />
     </Layout>
   ),
@@ -66,7 +68,17 @@ const adminRoute = createRoute({
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, vendorRoute, adminRoute]);
+const adminRegisterRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/admin/register',
+  component: AdminRegistration,
+  errorComponent: ({ error }) => {
+    console.error('Admin register route error:', error);
+    return <ErrorComponent error={error} />;
+  },
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, vendorRoute, adminRoute, adminRegisterRoute]);
 
 const router = createRouter({ 
   routeTree,

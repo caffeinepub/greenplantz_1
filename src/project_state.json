@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 39,
   "summary": "A marketplace website for GreenPlantz connecting garden nursery vendors with customers. Vendors can register, manage products with pricing in rupees, upload photos with automatic watermarking, and fulfill orders. Admin team can manage orders, assign vendors based on location/pincode and product availability, handle payments and shipping details, control vendor access (enable/disable/delete), manage individual product visibility, and configure vendor commission rates.",
   "architectural_notes": [
     "Two-sided marketplace: vendor portal and admin portal with separate authentication",
@@ -14,8 +14,12 @@
     "Admin team member management with position and individual authentication",
     "SKU generation logic: unique per vendor-product combination, reused for identical products from same vendor"
   ],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Home page displays blank content/sections - reported after Version 9 deployment",
+    "Admin login/signup functionality still not working after Version 14 deployment",
+    "Admin authentication after Internet Identity login attempts to incorrectly redirect to vendor dashboard instead of admin dashboard"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
       "id": "feature-create-vendor-registration-system-with-fields-for-business-name-contact-information-and-address-including-pincode",
@@ -320,6 +324,326 @@
         "REQ-47"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-update-order-type-definition-in-frontend-src-types-index-ts-to-include-all-new-fields-paymentstatus-customername-customeraddress-with-state-district-pincode-amountreceived-couriercompanyname-consignmentnumber-shippingamount-assignedvendorplace-and-status",
+      "title": "Update Order type definition in frontend/src/types/index.ts to include all new fields: paymentStatus, customerName, customerAddress (with state, district, pincode), amountReceived, courierCompanyName, consignmentNumber, shippingAmount, assignedVendorPlace, and status.",
+      "reqIds": [
+        "REQ-51"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-react-query-mutation-hooks-in-frontend-src-hooks-usequeries-ts-useupdateorderpaymentstatus-that-calls-updateorderpaymentstatus-and-useupdateorderstatus-that-calls-updateorderstatus-both-invalidating-order-queries-on-success",
+      "title": "Add React Query mutation hooks in frontend/src/hooks/useQueries.ts: useUpdateOrderPaymentStatus that calls updateOrderPaymentStatus and useUpdateOrderStatus that calls updateOrderStatus, both invalidating order queries on success.",
+      "reqIds": [
+        "REQ-52"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-ordercreationform-tsx-to-include-input-fields-for-all-new-order-details-customer-name-address-with-state-district-pincode-fields-amount-received-courier-company-name-consignment-number-shipping-amount-order-status-dropdown-and-payment-status-dropdown",
+      "title": "Update OrderCreationForm.tsx to include input fields for all new order details: customer name, address with state/district/pincode fields, amount received, courier company name, consignment number, shipping amount, order status dropdown, and payment status dropdown.",
+      "reqIds": [
+        "REQ-53"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-ordermanagement-tsx-to-display-all-new-order-fields-in-the-order-details-view-customer-name-full-address-with-state-district-pincode-amount-received-courier-company-name-consignment-number-shipping-amount-assigned-vendor-place-order-status-and-payment-status",
+      "title": "Update OrderManagement.tsx to display all new order fields in the order details view: customer name, full address with state/district/pincode, amount received, courier company name, consignment number, shipping amount, assigned vendor place, order status, and payment status.",
+      "reqIds": [
+        "REQ-54"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-orderstatuseditor-component-in-frontend-that-displays-a-dropdown-to-change-order-status-between-fulfilled-success-pending-return-cod-damaged-and-uses-the-useupdateorderstatus-mutation-hook-to-save-changes",
+      "title": "Create OrderStatusEditor component in frontend that displays a dropdown to change order status between 'Fulfilled', 'Success', 'Pending', 'Return', 'COD', 'Damaged' and uses the useUpdateOrderStatus mutation hook to save changes.",
+      "reqIds": [
+        "REQ-55"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-paymentstatuseditor-component-in-frontend-that-displays-a-dropdown-to-change-payment-status-between-fully-paid-partially-paid-pending-adjustment-settlement-and-uses-the-useupdateorderpaymentstatus-mutation-hook-to-save-changes",
+      "title": "Create PaymentStatusEditor component in frontend that displays a dropdown to change payment status between 'Fully Paid', 'Partially Paid', 'Pending', 'Adjustment Settlement' and uses the useUpdateOrderPaymentStatus mutation hook to save changes.",
+      "reqIds": [
+        "REQ-56"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-integrate-orderstatuseditor-and-paymentstatuseditor-components-into-ordermanagement-tsx-displaying-them-alongside-order-details-so-admin-can-update-order-status-and-payment-status-inline",
+      "title": "Integrate OrderStatusEditor and PaymentStatusEditor components into OrderManagement.tsx, displaying them alongside order details so admin can update order status and payment status inline.",
+      "reqIds": [
+        "REQ-57"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-paymentmanagement-tsx-to-display-and-filter-orders-by-the-new-payment-status-options-fully-paid-partially-paid-pending-adjustment-settlement-instead-of-the-old-binary-paid-unpaid-system",
+      "title": "Update PaymentManagement.tsx to display and filter orders by the new payment status options ('Fully Paid', 'Partially Paid', 'Pending', 'Adjustment Settlement') instead of the old binary paid/unpaid system.",
+      "reqIds": [
+        "REQ-58"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-admin-access-button-on-the-home-page-homepage-tsx-that-fails-to-navigate-or-trigger-any-action-when-clicked",
+      "title": "Debug and fix the 'Admin Access' button on the home page (HomePage.tsx) that fails to navigate or trigger any action when clicked",
+      "reqIds": [
+        "REQ-63"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-admin-access-button-is-properly-connected-to-the-admin-authentication-flow-via-adminregistration-component-or-appropriate-navigation-route",
+      "title": "Verify that the Admin Access button is properly connected to the admin authentication flow via AdminRegistration component or appropriate navigation route",
+      "reqIds": [
+        "REQ-64"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-check-for-any-event-handler-conflicts-css-pointer-events-issues-or-z-index-layering-problems-that-might-prevent-the-admin-access-button-from-receiving-click-events",
+      "title": "Check for any event handler conflicts, CSS pointer-events issues, or z-index layering problems that might prevent the Admin Access button from receiving click events",
+      "reqIds": [
+        "REQ-65"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-home-page-hero-section-in-homepage-tsx-with-the-design-shown-in-the-uploaded-image-image-2-png-the-hero-section-must-include-a-mint-green-badge-with-leaf-icon-reading-india-s-premier-plant-marketplace-the-main-headline-connect-nurseries-with-green-dreams-with-green-dreams-in-dark-green-a-subtitle-describing-the-platform-as-a-comprehensive-platform-for-garden-nursery-vendors-and-two-call-to-action-buttons-register-as-vendor-in-dark-green-admin-access-in-light-gray",
+      "title": "Replace the current home page hero section in HomePage.tsx with the design shown in the uploaded image (image-2.png). The hero section must include: a mint green badge with leaf icon reading 'India's Premier Plant Marketplace', the main headline 'Connect Nurseries with Green Dreams' (with 'Green Dreams' in dark green), a subtitle describing the platform as a comprehensive platform for garden nursery vendors, and two call-to-action buttons ('Register as Vendor' in dark green, 'Admin Access' in light gray).",
+      "reqIds": [
+        "REQ-66"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-home-page-background-color-in-homepage-tsx-to-use-the-light-mint-sage-green-tone-e8f3ed-or-similar-shown-in-the-uploaded-image-creating-a-cohesive-nature-inspired-aesthetic",
+      "title": "Update the home page background color in HomePage.tsx to use the light mint/sage green tone (#e8f3ed or similar) shown in the uploaded image, creating a cohesive nature-inspired aesthetic.",
+      "reqIds": [
+        "REQ-67"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-or-update-the-why-choose-greenplantz-section-in-homepage-tsx-to-match-the-layout-shown-in-the-uploaded-image-positioned-below-the-hero-section",
+      "title": "Add or update the 'Why Choose GreenPlantz?' section in HomePage.tsx to match the layout shown in the uploaded image, positioned below the hero section.",
+      "reqIds": [
+        "REQ-68"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-typography-in-homepage-tsx-to-use-the-font-weights-and-sizes-shown-in-the-uploaded-image-bold-large-font-for-the-main-headline-medium-weight-for-the-subtitle-and-appropriate-button-text-styling",
+      "title": "Update the typography in HomePage.tsx to use the font weights and sizes shown in the uploaded image: bold, large font for the main headline, medium weight for the subtitle, and appropriate button text styling.",
+      "reqIds": [
+        "REQ-69"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-ensure-the-admin-access-button-in-homepage-tsx-is-properly-connected-to-the-admin-authentication-flow-and-navigates-correctly-when-clicked-fixing-the-known-issue-where-the-button-does-not-respond-to-clicks",
+      "title": "Ensure the 'Admin Access' button in HomePage.tsx is properly connected to the admin authentication flow and navigates correctly when clicked, fixing the known issue where the button does not respond to clicks.",
+      "reqIds": [
+        "REQ-70"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-admin-access-button-from-the-hero-section-in-homepage-tsx",
+      "title": "Remove the 'Admin Access' button from the hero section in HomePage.tsx",
+      "reqIds": [
+        "REQ-71"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-admin-login-button-to-the-layout-component-header-navigation-that-navigates-to-the-adminregistration-component-for-existing-admin-authentication",
+      "title": "Add 'Admin Login' button to the Layout component header navigation that navigates to the AdminRegistration component for existing admin authentication",
+      "reqIds": [
+        "REQ-72"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-admin-sign-up-button-to-the-layout-component-header-navigation-that-navigates-to-the-adminregistration-component-for-new-admin-profile-creation",
+      "title": "Add 'Admin Sign Up' button to the Layout component header navigation that navigates to the AdminRegistration component for new admin profile creation",
+      "reqIds": [
+        "REQ-73"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-layout-component-header-navigation-to-position-the-admin-login-and-admin-sign-up-buttons-in-the-top-navigation-bar-ensuring-they-are-visible-and-accessible-alongside-existing-navigation-elements",
+      "title": "Update the Layout component header navigation to position the 'Admin Login' and 'Admin Sign Up' buttons in the top navigation bar, ensuring they are visible and accessible alongside existing navigation elements",
+      "reqIds": [
+        "REQ-74"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-investigate-and-identify-the-specific-error-occurring-in-the-admin-login-or-sign-up-flow-in-adminregistration-tsx-check-browser-console-logs-network-requests-to-the-backend-internet-identity-authentication-callbacks-and-any-react-error-boundaries-or-state-management-issues",
+      "title": "Investigate and identify the specific error occurring in the admin login or sign up flow in AdminRegistration.tsx. Check browser console logs, network requests to the backend, Internet Identity authentication callbacks, and any React error boundaries or state management issues.",
+      "reqIds": [
+        "REQ-75"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-the-identified-error-in-adminregistration-tsx-authentication-flow-ensure-internet-identity-authentication-completes-successfully-user-profile-creation-or-retrieval-works-correctly-and-admin-profile-validation-including-greenplantz2020-gmail-com-special-handling-and-team-member-checks-functions-properly",
+      "title": "Fix the identified error in AdminRegistration.tsx authentication flow. Ensure Internet Identity authentication completes successfully, user profile creation or retrieval works correctly, and admin profile validation (including greenplantz2020@gmail.com special handling and team member checks) functions properly.",
+      "reqIds": [
+        "REQ-76"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-error-handling-and-user-feedback-in-adminregistration-tsx-to-display-clear-error-messages-when-authentication-fails-including-specific-messages-for-network-errors-backend-authorization-failures-and-internet-identity-issues",
+      "title": "Add comprehensive error handling and user feedback in AdminRegistration.tsx to display clear error messages when authentication fails, including specific messages for network errors, backend authorization failures, and Internet Identity issues.",
+      "reqIds": [
+        "REQ-78"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-test-the-complete-admin-authentication-flow-end-to-end-for-both-new-admin-sign-up-and-existing-admin-login-scenarios-verify-that-admin-login-and-admin-sign-up-buttons-in-the-layout-header-navigation-correctly-trigger-the-authentication-flow",
+      "title": "Test the complete admin authentication flow end-to-end for both new admin sign up and existing admin login scenarios. Verify that Admin Login and Admin Sign Up buttons in the Layout header navigation correctly trigger the authentication flow.",
+      "reqIds": [
+        "REQ-79"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-console-logging-throughout-adminregistration-tsx-to-trace-the-complete-authentication-flow-log-when-internet-identity-authentication-starts-when-it-completes-the-authenticated-principal-when-backend-calls-are-made-getuser-createuser-getadminprofile-etc-all-response-data-from-backend-calls-and-any-errors-encountered-at-each-step",
+      "title": "Add comprehensive console logging throughout AdminRegistration.tsx to trace the complete authentication flow: log when Internet Identity authentication starts, when it completes, the authenticated principal, when backend calls are made (getUser, createUser, getAdminProfile, etc.), all response data from backend calls, and any errors encountered at each step",
+      "reqIds": [
+        "REQ-80"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-useactor-hook-properly-initializes-the-backend-actor-with-the-authenticated-identity-after-internet-identity-login-completes-in-adminregistration-tsx-and-add-error-handling-if-actor-initialization-fails",
+      "title": "Verify that the useActor hook properly initializes the backend actor with the authenticated identity after Internet Identity login completes in AdminRegistration.tsx, and add error handling if actor initialization fails",
+      "reqIds": [
+        "REQ-81"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-visible-loading-indicator-and-status-messages-in-adminregistration-tsx-ui-that-displays-the-current-authentication-step-e-g-authenticating-with-internet-identity-creating-user-profile-checking-admin-authorization-redirecting-to-dashboard-so-users-can-see-progress-instead-of-a-blank-screen",
+      "title": "Add a visible loading indicator and status messages in AdminRegistration.tsx UI that displays the current authentication step (e.g., 'Authenticating with Internet Identity...', 'Creating user profile...', 'Checking admin authorization...', 'Redirecting to dashboard...') so users can see progress instead of a blank screen",
+      "reqIds": [
+        "REQ-82"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-test-the-admin-authentication-flow-in-the-browser-developer-console-and-document-the-exact-error-message-stack-trace-and-failing-backend-call-or-frontend-code-location-that-causes-the-still-not-working-issue",
+      "title": "Test the admin authentication flow in the browser developer console and document the exact error message, stack trace, and failing backend call or frontend code location that causes the 'still not working' issue",
+      "reqIds": [
+        "REQ-83"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-the-layout-component-s-admin-login-and-admin-sign-up-buttons-correctly-navigate-to-the-adminregistration-route-and-that-the-route-is-properly-defined-in-app-tsx-router-configuration",
+      "title": "Verify that the Layout component's Admin Login and Admin Sign Up buttons correctly navigate to the AdminRegistration route and that the route is properly defined in App.tsx router configuration",
+      "reqIds": [
+        "REQ-84"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-fallback-error-recovery-in-adminregistration-tsx-that-catches-any-unhandled-authentication-errors-and-displays-a-user-friendly-error-message-with-a-try-again-button-that-resets-the-authentication-state-and-allows-users-to-retry",
+      "title": "Add fallback error recovery in AdminRegistration.tsx that catches any unhandled authentication errors and displays a user-friendly error message with a 'Try Again' button that resets the authentication state and allows users to retry",
+      "reqIds": [
+        "REQ-85"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-fix-adminregistration-tsx-to-prevent-incorrect-redirection-to-vendor-dashboard-after-successful-internet-identity-authentication-ensure-the-component-correctly-identifies-admin-users-and-redirects-only-to-admin-route",
+      "title": "Fix AdminRegistration.tsx to prevent incorrect redirection to vendor dashboard after successful Internet Identity authentication. Ensure the component correctly identifies admin users and redirects only to /admin route.",
+      "reqIds": [
+        "REQ-86"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-review-and-fix-the-authentication-flow-logic-in-adminregistration-tsx-to-remove-any-code-paths-that-check-for-vendor-profile-or-attempt-vendor-dashboard-navigation-during-admin-authentication",
+      "title": "Review and fix the authentication flow logic in AdminRegistration.tsx to remove any code paths that check for vendor profile or attempt vendor dashboard navigation during admin authentication.",
+      "reqIds": [
+        "REQ-87"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-explicit-admin-role-verification-in-adminregistration-tsx-after-internet-identity-authentication-that-calls-getadminprofile-or-checks-team-member-status-before-any-navigation-occurs-preventing-premature-or-incorrect-redirects",
+      "title": "Add explicit admin role verification in AdminRegistration.tsx after Internet Identity authentication that calls getAdminProfile or checks team member status before any navigation occurs, preventing premature or incorrect redirects.",
+      "reqIds": [
+        "REQ-88"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-resolve-the-error-loading-profile-issue-shown-in-the-uploaded-screenshot-image-3-png-that-occurs-during-admin-authentication-debug-and-fix-the-profile-loading-logic-to-handle-admin-profiles-correctly",
+      "title": "Resolve the 'Error loading profile' issue shown in the uploaded screenshot (image-3.png) that occurs during admin authentication. Debug and fix the profile loading logic to handle admin profiles correctly.",
+      "reqIds": [
+        "REQ-89"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-protectedvendorroute-tsx-correctly-guards-the-vendor-dashboard-route-vendor-and-only-allows-authenticated-users-with-valid-vendor-profiles-to-access-vendordashboard-users-without-vendor-profiles-should-be-redirected-or-shown-an-appropriate-error-message",
+      "title": "Verify that ProtectedVendorRoute.tsx correctly guards the vendor dashboard route (/vendor) and only allows authenticated users with valid vendor profiles to access VendorDashboard. Users without vendor profiles should be redirected or shown an appropriate error message.",
+      "reqIds": [
+        "REQ-92"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-that-protectedadminroute-tsx-correctly-guards-the-admin-dashboard-route-admin-and-only-allows-authenticated-users-with-valid-admin-authorization-greenplantz2020-gmail-com-or-active-team-members-to-access-admindashboard-unauthorized-users-should-be-redirected-or-shown-an-appropriate-error-message",
+      "title": "Verify that ProtectedAdminRoute.tsx correctly guards the admin dashboard route (/admin) and only allows authenticated users with valid admin authorization (greenplantz2020@gmail.com or active team members) to access AdminDashboard. Unauthorized users should be redirected or shown an appropriate error message.",
+      "reqIds": [
+        "REQ-93"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-layout-tsx-header-navigation-to-display-role-specific-dashboard-links-show-vendor-dashboard-link-only-for-authenticated-vendor-users-show-admin-dashboard-link-only-for-authenticated-admin-users-ensure-links-navigate-to-the-correct-routes-vendor-and-admin-respectively",
+      "title": "Update Layout.tsx header navigation to display role-specific dashboard links: show 'Vendor Dashboard' link only for authenticated vendor users, show 'Admin Dashboard' link only for authenticated admin users. Ensure links navigate to the correct routes (/vendor and /admin respectively).",
+      "reqIds": [
+        "REQ-94"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-debug-and-fix-the-access-denied-error-shown-in-the-uploaded-screenshot-image-4-png-that-displays-you-do-not-have-permission-to-access-the-admin-dashboard-with-authorization-required-and-registration-failed-messages-when-attempting-to-access-the-admin-dashboard",
+      "title": "Debug and fix the 'Access Denied' error shown in the uploaded screenshot (image-4.png) that displays 'You do not have permission to access the admin dashboard' with 'Authorization Required' and 'Registration failed' messages when attempting to access the admin dashboard",
+      "reqIds": [
+        "REQ-98"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-verify-and-fix-the-admin-authorization-check-logic-in-protectedadminroute-tsx-that-incorrectly-denies-access-to-authorized-admin-users-ensuring-it-properly-validates-admin-status-from-the-backend-iscalleradmin-function-before-rendering-the-admindashboard",
+      "title": "Verify and fix the admin authorization check logic in ProtectedAdminRoute.tsx that incorrectly denies access to authorized admin users, ensuring it properly validates admin status from the backend isCallerAdmin function before rendering the AdminDashboard",
+      "reqIds": [
+        "REQ-100"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-comprehensive-error-logging-in-adminregistration-tsx-to-capture-the-exact-backend-response-and-error-details-when-the-registration-failed-and-authorization-required-errors-occur-helping-identify-the-root-cause-of-the-authorization-failure",
+      "title": "Add comprehensive error logging in AdminRegistration.tsx to capture the exact backend response and error details when the 'Registration failed' and 'Authorization Required' errors occur, helping identify the root cause of the authorization failure",
+      "reqIds": [
+        "REQ-101"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -488,6 +812,154 @@
       "summary": "Create backend function updateProductByAdmin in main.mo that accepts productId and updated product fields, validates admin authorization, updates the product in storage, and returns success confirmation",
       "reqIds": [
         "REQ-45"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-39",
+      "summary": "Add payment status management in admin dashboard with options: Fully Paid, Partially Paid, Pending, Adjustment Settlement",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-40",
+      "summary": "Expand order details to include customer name, address (with state, district, pincode), amount received, courier company name, consignment number, shipping amount, and assigned vendor name with location",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-41",
+      "summary": "Add order status management with options: Fulfilled, Success, Pending, Return, COD, Damaged",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-42",
+      "summary": "Add payment status field to Order data model in backend/main.mo with possible values: 'Fully Paid', 'Partially Paid', 'Pending', 'Adjustment Settlement'. Include backend function updateOrderPaymentStatus that accepts orderId and new payment status, validates admin authorization, and updates the order.",
+      "reqIds": [
+        "REQ-48"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-43",
+      "summary": "Add comprehensive order detail fields to Order data model in backend/main.mo: customerName (Text), customerAddress with state, district, and pincode (nested object or separate fields), amountReceived (Nat), courierCompanyName (Text), consignmentNumber (Text), shippingAmount (Nat), and assignedVendorPlace (Text for vendor location).",
+      "reqIds": [
+        "REQ-49"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-44",
+      "summary": "Add order status field to Order data model in backend/main.mo with possible values: 'Fulfilled', 'Success', 'Pending', 'Return', 'COD', 'Damaged'. Include backend function updateOrderStatus that accepts orderId and new status, validates admin authorization, and updates the order.",
+      "reqIds": [
+        "REQ-50"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-53",
+      "summary": "Update backend createOrder function in main.mo to accept and store all new order detail fields: customerName, customerAddress (state, district, pincode), amountReceived, courierCompanyName, consignmentNumber, shippingAmount, assignedVendorPlace, status, and paymentStatus with appropriate default values.",
+      "reqIds": [
+        "REQ-59"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-54",
+      "summary": "Investigate and fix the blank content sections appearing on the home page (HomePage.tsx) after Version 9 deployment. The page should display the hero section with GreenPlantz branding, call-to-action buttons for vendor registration and admin access, and the features section highlighting product management and order assignment capabilities.",
+      "reqIds": [
+        "REQ-60"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-55",
+      "summary": "Verify that all static assets referenced in HomePage.tsx are properly loaded and accessible, including any background images, icons, or logos that may be causing blank sections if missing.",
+      "reqIds": [
+        "REQ-61"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-56",
+      "summary": "Check for any console errors, React rendering issues, or CSS styling problems in HomePage.tsx that could cause content sections to appear blank. Fix any identified issues with component rendering or layout.",
+      "reqIds": [
+        "REQ-62"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-58",
+      "summary": "Remove 'Admin Access' button from home page and add separate 'Admin Login' and 'Admin Sign Up' buttons in header/top navigation",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-59",
+      "summary": "Debug and fix error in admin login or sign up flow",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-62",
+      "summary": "Verify backend admin authorization logic in main.mo correctly handles admin access for both greenplantz2020@gmail.com email and active team members. Ensure the backend properly returns admin profile data and authorization status.",
+      "reqIds": [
+        "REQ-77"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-63",
+      "summary": "Refactor VendorDashboard.tsx to display only vendor-specific functionality: product upload form, vendor's product list with inline editing, and orders assigned to the authenticated vendor. Remove any admin-related UI elements or navigation options.",
+      "reqIds": [
+        "REQ-90"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-64",
+      "summary": "Refactor AdminDashboard.tsx to display only admin-specific functionality: order management, payment tracking, vendor management, product oversight across all vendors, and team member management. Remove any vendor-specific product upload or editing forms intended for individual vendor use.",
+      "reqIds": [
+        "REQ-91"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-65",
+      "summary": "Deploy the current Version 17 codebase to the production environment on the Internet Computer. Ensure all canisters (frontend and backend) are built, deployed, and properly configured.",
+      "reqIds": [
+        "REQ-95"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-66",
+      "summary": "Verify that the separate vendor and admin dashboards function correctly in the production deployment, with vendors seeing only vendor-specific features and admins seeing only admin-specific features.",
+      "reqIds": [
+        "REQ-96"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-67",
+      "summary": "Test and verify all critical user flows in the production environment: vendor registration and login, admin login via greenplantz2020@gmail.com or team member credentials, product upload with SKU assignment, order creation, vendor assignment, and payment status management.",
+      "reqIds": [
+        "REQ-97"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-68",
+      "summary": "Clear the error in the deployed application",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-70",
+      "summary": "Fix the backend record validation error 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' shown at the bottom of the uploaded screenshot (image-4.png) in the AdminRegistration.tsx authentication flow",
+      "reqIds": [
+        "REQ-99"
       ],
       "status": "pending"
     }

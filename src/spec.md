@@ -1,15 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Create a comprehensive admin dashboard for vendor and product management with viewing, editing, and status control capabilities.
+**Goal:** Fix admin registration authorization error and access denied issue preventing authorized admin users from accessing the admin dashboard.
 
 **Planned changes:**
-- Add vendor overview section displaying all vendors with their business details, product counts, order counts, and enable/disable toggles
-- Implement drill-down view to display all products for a selected vendor with full product details and photos
-- Add product editing functionality allowing admin to modify product fields (name, description, price, quantity, photos)
-- Sync admin-edited product changes so vendors see updates in their dashboard
-- Create backend updateProductByAdmin function with admin authorization validation
-- Build ProductEditDialog component with pre-filled form fields and photo management
-- Add useUpdateProductByAdmin React Query mutation hook with automatic cache invalidation
+- Debug and resolve the 'Access Denied' error that appears when authorized admin users attempt to access the admin dashboard
+- Fix the backend record validation error 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' in the AdminRegistration.tsx authentication flow
+- Verify and correct the admin authorization check logic in ProtectedAdminRoute.tsx to properly validate admin status from the backend isCallerAdmin function
+- Add comprehensive error logging in AdminRegistration.tsx to capture exact backend response and error details during authentication failures
 
-**User-visible outcome:** Admin can view all vendors and their products in a centralized dashboard, toggle vendor status on/off, drill into individual vendor product lists, and edit any product with changes automatically visible to the original vendor.
+**User-visible outcome:** Authorized admin users (greenplantz2020@gmail.com and active team members) can successfully register and access the admin dashboard without encountering 'Access Denied', 'Authorization Required', or 'Registration failed' errors.

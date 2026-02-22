@@ -11,9 +11,11 @@ import type {
   OrderId, 
   CommissionType, 
   TeamMember,
-  ExtendedActorInterface 
+  ExtendedActorInterface,
+  DeliveryStatus,
+  Address
 } from '../types';
-import { ExternalBlob, UserRole, UpdateProductRequest } from '../backend';
+import { ExternalBlob, UserRole } from '../backend';
 import { Principal } from '@icp-sdk/core/principal';
 
 // User Profile Queries
@@ -24,7 +26,24 @@ export function useGetCallerUserProfile() {
     queryKey: ['currentUserProfile'],
     queryFn: async () => {
       if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).getCallerUserProfile();
+      console.log('[useQueries] Fetching caller user profile...');
+      try {
+        const profile = await (actor as unknown as ExtendedActorInterface).getCallerUserProfile();
+        console.log('[useQueries] Caller user profile received:', {
+          hasProfile: !!profile,
+          profileRole: profile?.role,
+          profileName: profile?.name,
+          profileEmail: profile?.email,
+        });
+        return profile;
+      } catch (error) {
+        console.error('[useQueries] Error fetching caller user profile:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+        });
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching,
     retry: false,
@@ -44,12 +63,39 @@ export function useSaveCallerUserProfile() {
   return useMutation({
     mutationFn: async (profile: UserProfile) => {
       if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).saveCallerUserProfile(profile);
+      console.log('[useQueries] Saving caller user profile:', {
+        profileStructure: profile,
+        roleType: typeof profile.role,
+        roleValue: profile.role,
+        hasBusinessName: !!profile.businessName,
+        hasPhone: !!profile.phone,
+      });
+      
+      try {
+        await (actor as unknown as ExtendedActorInterface).saveCallerUserProfile(profile);
+        console.log('[useQueries] User profile saved successfully');
+      } catch (error) {
+        console.error('[useQueries] Error saving user profile:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+          errorName: error instanceof Error ? error.name : undefined,
+          sentProfile: profile,
+        });
+        throw error;
+      }
     },
     onSuccess: () => {
+      console.log('[useQueries] Invalidating queries after profile save');
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
       queryClient.invalidateQueries({ queryKey: ['userRole'] });
       queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+    },
+    onError: (error) => {
+      console.error('[useQueries] Mutation error in useSaveCallerUserProfile:', {
+        error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
     },
   });
 }
@@ -62,8 +108,15 @@ export function useGetCallerUserRole() {
     queryKey: ['userRole'],
     queryFn: async () => {
       if (!actor) return 'guest';
-      const role = await (actor as unknown as ExtendedActorInterface).getCallerUserRole();
-      return role;
+      console.log('[useQueries] Fetching caller user role...');
+      try {
+        const role = await (actor as unknown as ExtendedActorInterface).getCallerUserRole();
+        console.log('[useQueries] Caller user role:', role);
+        return role;
+      } catch (error) {
+        console.error('[useQueries] Error fetching caller user role:', error);
+        throw error;
+      }
     },
     enabled: !!actor && !actorFetching,
   });
@@ -76,9 +129,23 @@ export function useIsCallerAdmin() {
     queryKey: ['isAdmin'],
     queryFn: async () => {
       if (!actor) return false;
-      return (actor as unknown as ExtendedActorInterface).isCallerAdmin();
+      console.log('[useQueries] Checking if caller is admin...');
+      try {
+        const isAdmin = await (actor as unknown as ExtendedActorInterface).isCallerAdmin();
+        console.log('[useQueries] Is caller admin result:', isAdmin);
+        return isAdmin;
+      } catch (error) {
+        console.error('[useQueries] Error checking if caller is admin:', {
+          error,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorStack: error instanceof Error ? error.stack : undefined,
+        });
+        // Return false instead of throwing to prevent blocking the UI
+        return false;
+      }
     },
     enabled: !!actor && !actorFetching,
+    retry: false,
   });
 }
 
@@ -89,11 +156,16 @@ export function useAssignCallerUserRole() {
   return useMutation({
     mutationFn: async ({ user, role }: { user: Principal; role: UserRole }) => {
       if (!actor) throw new Error('Actor not available');
+      console.log('[useQueries] Assigning caller user role:', { user: user.toString(), role });
       return (actor as unknown as ExtendedActorInterface).assignCallerUserRole(user, role);
     },
     onSuccess: () => {
+      console.log('[useQueries] User role assigned successfully');
       queryClient.invalidateQueries({ queryKey: ['userRole'] });
       queryClient.invalidateQueries({ queryKey: ['isAdmin'] });
+    },
+    onError: (error) => {
+      console.error('[useQueries] Error assigning user role:', error);
     },
   });
 }
@@ -109,6 +181,7 @@ export function useGetCallerVendorProfile() {
       return (actor as unknown as ExtendedActorInterface).getCallerVendorProfile();
     },
     enabled: !!actor && !actorFetching,
+    retry: false,
   });
 }
 
@@ -123,6 +196,7 @@ export function useSaveCallerVendorProfile() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vendorProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
     },
   });
 }
@@ -161,16 +235,11 @@ export function useUploadProduct() {
   return useMutation({
     mutationFn: async (product: Product) => {
       if (!actor) throw new Error('Actor not available');
-      await (actor as unknown as ExtendedActorInterface).uploadProduct(product);
-      return product;
+      return (actor as unknown as ExtendedActorInterface).uploadProduct(product);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['vendorProducts'] });
       queryClient.invalidateQueries({ queryKey: ['allProducts'] });
-    },
-    onError: (error: any) => {
-      console.error('Product upload error:', error);
-      throw error;
     },
   });
 }
@@ -196,28 +265,11 @@ export function useToggleProductStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ vendorId, productName, enabled }: { vendorId: VendorId; productName: string; enabled: boolean }) => {
+    mutationFn: async ({ key, enabled }: { key: [VendorId, string]; enabled: boolean }) => {
       if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).toggleProductStatus([vendorId, productName], enabled);
+      return (actor as unknown as ExtendedActorInterface).toggleProductStatus(key, enabled);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allProducts'] });
-      queryClient.invalidateQueries({ queryKey: ['vendorProducts'] });
-    },
-  });
-}
-
-export function useUpdateProductByAdmin() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (request: UpdateProductRequest) => {
-      if (!actor) throw new Error('Actor not available');
-      return (actor as any).updateProductByAdmin(request);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['vendorProducts'] });
       queryClient.invalidateQueries({ queryKey: ['allProducts'] });
     },
@@ -262,6 +314,7 @@ export function useCreateOrder() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['vendorOrders'] });
     },
   });
 }
@@ -314,35 +367,6 @@ export function useUpdatePaymentStatus() {
   });
 }
 
-// Admin Profile Queries
-export function useGetCallerAdminProfile() {
-  const { actor, isFetching: actorFetching } = useActor();
-
-  return useQuery<AdminProfile | null>({
-    queryKey: ['adminProfile'],
-    queryFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).getCallerAdminProfile();
-    },
-    enabled: !!actor && !actorFetching,
-  });
-}
-
-export function useSaveCallerAdminProfile() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (profile: AdminProfile) => {
-      if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).saveCallerAdminProfile(profile);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['adminProfile'] });
-    },
-  });
-}
-
 // Vendor Management Queries
 export function useGetAllVendors() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -354,6 +378,28 @@ export function useGetAllVendors() {
       return (actor as unknown as ExtendedActorInterface).getAllVendors();
     },
     enabled: !!actor && !actorFetching,
+  });
+}
+
+export function useFindVendorsByPincode() {
+  const { actor } = useActor();
+
+  return useMutation({
+    mutationFn: async (pincode: bigint) => {
+      if (!actor) throw new Error('Actor not available');
+      return (actor as unknown as ExtendedActorInterface).findVendorsByPincode(pincode);
+    },
+  });
+}
+
+export function useFindAvailableVendors() {
+  const { actor } = useActor();
+
+  return useMutation({
+    mutationFn: async ({ pincode, productName }: { pincode: bigint; productName: string }) => {
+      if (!actor) throw new Error('Actor not available');
+      return (actor as unknown as ExtendedActorInterface).findAvailableVendors(pincode, productName);
+    },
   });
 }
 
@@ -383,7 +429,6 @@ export function useDeleteVendor() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['allVendors'] });
-      queryClient.invalidateQueries({ queryKey: ['allProducts'] });
     },
   });
 }
@@ -403,17 +448,6 @@ export function useSetVendorCommission() {
   });
 }
 
-export function useFindAvailableVendors() {
-  const { actor } = useActor();
-
-  return useMutation({
-    mutationFn: async ({ pincode, productName }: { pincode: bigint; productName: string }) => {
-      if (!actor) throw new Error('Actor not available');
-      return (actor as unknown as ExtendedActorInterface).findAvailableVendors(pincode, productName);
-    },
-  });
-}
-
 // Team Member Queries
 export function useGetAllTeamMembers() {
   const { actor, isFetching: actorFetching } = useActor();
@@ -427,9 +461,6 @@ export function useGetAllTeamMembers() {
     enabled: !!actor && !actorFetching,
   });
 }
-
-// Alias for backward compatibility
-export const useTeamMembers = useGetAllTeamMembers;
 
 export function useCreateTeamMember() {
   const { actor } = useActor();
@@ -460,9 +491,6 @@ export function useUpdateTeamMember() {
     },
   });
 }
-
-// Alias for backward compatibility
-export const useToggleTeamMemberStatus = useUpdateTeamMember;
 
 export function useDeleteTeamMember() {
   const { actor } = useActor();

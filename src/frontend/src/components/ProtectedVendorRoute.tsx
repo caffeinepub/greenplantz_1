@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useGetCallerVendorProfile } from '../hooks/useQueries';
 import VendorDashboard from '../pages/VendorDashboard';
@@ -7,7 +6,7 @@ import { AlertCircle } from 'lucide-react';
 
 export default function ProtectedVendorRoute() {
   const { identity, isInitializing } = useInternetIdentity();
-  const { data: vendorProfile, isLoading: profileLoading } = useGetCallerVendorProfile();
+  const { data: vendorProfile, isLoading: profileLoading, isFetched } = useGetCallerVendorProfile();
 
   const isAuthenticated = !!identity;
 
@@ -35,7 +34,7 @@ export default function ProtectedVendorRoute() {
     );
   }
 
-  if (!vendorProfile) {
+  if (isFetched && !vendorProfile) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 p-4">
         <div className="max-w-md w-full bg-card rounded-2xl shadow-lg p-8 border border-border text-center">

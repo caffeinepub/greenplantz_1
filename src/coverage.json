@@ -1,99 +1,79 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-19T19:16:05.495Z",
+  "generatedAt": "2026-02-22T18:31:25.054Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 5,
+    "total": 4,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-42",
-        "summary": "Create a comprehensive vendor overview section in the admin dashboard displaying all vendors in a table or card layout with columns for vendor name, business address, total products count, orders assigned count, and quick enable/disable toggle button for each vendor",
+        "id": "REQ-100",
+        "summary": "Verify and fix the admin authorization check logic in ProtectedAdminRoute.tsx that incorrectly denies access to authorized admin users, ensuring it properly validates admin status from the backend isCallerAdmin function before rendering the AdminDashboard",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/VendorManagement.tsx",
+          "frontend/src/components/ProtectedAdminRoute.tsx",
           "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/VendorManagement.tsx",
+          "frontend/src/components/ProtectedAdminRoute.tsx",
           "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
-        "id": "REQ-43",
-        "summary": "Add a drill-down view in the admin dashboard that displays all products for a selected vendor, showing product name, description, price, quantity, SKU, status (enabled/disabled), and thumbnail images of uploaded photos",
+        "id": "REQ-101",
+        "summary": "Add comprehensive error logging in AdminRegistration.tsx to capture the exact backend response and error details when the 'Registration failed' and 'Authorization Required' errors occur, helping identify the root cause of the authorization failure",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/VendorProductsView.tsx",
-          "frontend/src/components/VendorManagement.tsx"
+          "frontend/src/components/AdminRegistration.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/VendorProductsView.tsx",
-          "frontend/src/components/VendorManagement.tsx"
+          "frontend/src/components/AdminRegistration.tsx",
+          "frontend/src/hooks/useQueries.ts"
         ]
       },
       {
-        "id": "REQ-44",
-        "summary": "Implement product editing functionality in the admin dashboard that allows admin to edit any product field (name, description, price, quantity, photos) and automatically syncs those changes so they are visible to the vendor who created the product",
+        "id": "REQ-98",
+        "summary": "Debug and fix the 'Access Denied' error shown in the uploaded screenshot (image-4.png) that displays 'You do not have permission to access the admin dashboard' with 'Authorization Required' and 'Registration failed' messages when attempting to access the admin dashboard",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ProductEditDialog.tsx",
-          "frontend/src/components/VendorProductsView.tsx"
+          "frontend/src/components/AdminRegistration.tsx",
+          "frontend/src/components/ProtectedAdminRoute.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/ProductEditDialog.tsx",
-          "frontend/src/components/VendorProductsView.tsx"
+          "frontend/src/components/AdminRegistration.tsx",
+          "frontend/src/components/ProtectedAdminRoute.tsx"
         ]
       },
       {
-        "id": "REQ-45",
-        "summary": "Create backend function updateProductByAdmin in main.mo that accepts productId and updated product fields, validates admin authorization, updates the product in storage, and returns success confirmation",
+        "id": "REQ-99",
+        "summary": "Fix the backend record validation error 'Invalid record {name:text; role:text; businessName:opt text; email:text; phoneNumber:text}; argument field role' shown at the bottom of the uploaded screenshot (image-4.png) in the AdminRegistration.tsx authentication flow",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
-      },
-      {
-        "id": "REQ-46",
-        "summary": "Add a React Query mutation hook useUpdateProductByAdmin in useQueries.ts that calls the backend updateProductByAdmin function and invalidates product-related queries to refresh the UI",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
-        ]
-      },
-      {
-        "id": "REQ-47",
-        "summary": "Create a ProductEditDialog component in frontend that displays a form with all product fields pre-filled, allows admin to modify values and photos, and submits changes using the useUpdateProductByAdmin mutation hook",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/ProductEditDialog.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/ProductEditDialog.tsx"
-        ]
       }
     ]
   },
   "changedFiles": [
     "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
-    "frontend/src/components/ProductEditDialog.tsx",
-    "frontend/src/components/VendorManagement.tsx",
-    "frontend/src/components/VendorProductsView.tsx",
+    "frontend/src/components/AdminRegistration.tsx",
+    "frontend/src/components/ProtectedAdminRoute.tsx",
+    "frontend/src/components/VendorRegistration.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/types/index.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

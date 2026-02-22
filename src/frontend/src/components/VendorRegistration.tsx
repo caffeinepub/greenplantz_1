@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useInternetIdentity } from '../hooks/useInternetIdentity';
 import { useSaveCallerVendorProfile, useSaveCallerUserProfile } from '../hooks/useQueries';
 import { Loader2, Store } from 'lucide-react';
+import { UserRole } from '../backend';
 
 export default function VendorRegistration() {
   const navigate = useNavigate();
@@ -43,11 +44,13 @@ export default function VendorRegistration() {
     }
 
     try {
-      // Save user profile first
+      // Save user profile first with vendor role
       await saveUserProfile.mutateAsync({
         name: formData.name,
-        userType: 'vendor',
         email: formData.email,
+        role: UserRole.vendor,
+        businessName: formData.businessName,
+        phone: formData.contactInfo,
       });
 
       // Then save vendor profile

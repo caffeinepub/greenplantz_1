@@ -1,5 +1,5 @@
 import type { Principal } from '@icp-sdk/core/principal';
-import { ExternalBlob } from '../backend';
+import { ExternalBlob, UserRole } from '../backend';
 
 // Type aliases
 export type VendorId = Principal;
@@ -11,11 +11,13 @@ export type CommissionType =
   | { percentage: bigint }
   | { fixed: bigint };
 
-// User Profile
+// User Profile - matches backend UserProfile type exactly
 export interface UserProfile {
   name: string;
-  userType: string;
   email: string;
+  role: UserRole;
+  businessName?: string;
+  phone?: string;
 }
 
 // Vendor Profile
@@ -47,6 +49,29 @@ export interface Product {
   sku: string;
 }
 
+// Address
+export interface Address {
+  state: string;
+  district: string;
+  pincode: string;
+}
+
+// Delivery Status
+export type DeliveryStatus = 
+  | 'fulfilled'
+  | 'success'
+  | 'pending'
+  | 'returned'
+  | 'cod'
+  | 'damaged';
+
+// Payment Status
+export type PaymentStatus = 
+  | 'Fully Paid'
+  | 'Partially Paid'
+  | 'Pending'
+  | 'Adjustment Settlement';
+
 // Order
 export interface Order {
   id: OrderId;
@@ -55,6 +80,14 @@ export interface Order {
   shippingAddress: string;
   trackingInfo: string | null;
   paymentStatus: string;
+  deliveryStatus: DeliveryStatus;
+  customerName: string;
+  customerAddress: Address;
+  amountReceived: bigint;
+  courierCompanyName: string;
+  consignmentNumber: string;
+  shippingAmount: bigint;
+  assignedVendorPlace: string;
 }
 
 // Admin Profile
